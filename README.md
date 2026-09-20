@@ -5,6 +5,23 @@ already gate-shaped.
 
 Generated with [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
 
+## Vocabulary data
+
+`public/vocabulary/jmdict-common-nouns.json` holds the word list the game checks against: the common
+standalone nouns of [JMdict](https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project),
+each with one short English gloss and its JMdict sense tags, keyed by hiragana reading.
+
+JMdict is the property of the Electronic Dictionary Research and Development Group and is used under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); the derived file is available under
+the same licence. See `public/vocabulary/LICENSE.txt`.
+
+The file is committed, so neither the app build nor CI downloads anything. To refresh it from the
+latest [jmdict-simplified](https://github.com/scriptin/jmdict-simplified) release:
+
+```bash
+pnpm run build:vocabulary
+```
+
 ## Development server
 
 To start a local development server, run:
