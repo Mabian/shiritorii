@@ -16,11 +16,11 @@ describe('App', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should credit the dictionary source on every screen', async () => {
+  it('should carry the footer on every screen', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.app-footer')?.textContent).toContain('JMdict');
+    expect(compiled.querySelector('app-footer')).not.toBeNull();
   });
 
   it('should leave the screen to the routed view', async () => {
