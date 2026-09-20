@@ -85,7 +85,7 @@ export const ROMAJI_TO_KANA: ReadonlyMap<string, string> = new Map(
   }),
 );
 
-/** Longest key in the table — the upper bound for the state machine's longest match. */
+/** Longest key in the table, the upper bound for the state machine's longest match. */
 export const MAX_ROMAJI_LENGTH = Math.max(...[...ROMAJI_TO_KANA.keys()].map((key) => key.length));
 
 /**
