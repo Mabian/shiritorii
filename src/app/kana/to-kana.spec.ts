@@ -1,4 +1,4 @@
-import { flushPending, toKana, toKatakana } from './to-kana';
+import { flushPending, toHiragana, toKana, toKatakana } from './to-kana';
 
 function kanaOf(input: string): string {
   const { kana, pending } = toKana(input);
@@ -168,5 +168,18 @@ describe('toKatakana', () => {
   it('shifts the hiragana block only', () => {
     expect(toKatakana('きゃっ')).toBe('キャッ');
     expect(toKatakana('ー。a')).toBe('ー。a');
+  });
+});
+
+describe('toHiragana', () => {
+  it('shifts the katakana block only', () => {
+    expect(toHiragana('テレビ')).toBe('てれび');
+    expect(toHiragana('キャッ')).toBe('きゃっ');
+    expect(toHiragana('コーヒー')).toBe('こーひー');
+    expect(toHiragana('やま。a')).toBe('やま。a');
+  });
+
+  it('round-trips with toKatakana', () => {
+    expect(toHiragana(toKatakana('しんぶん'))).toBe('しんぶん');
   });
 });

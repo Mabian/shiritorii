@@ -8,6 +8,8 @@ export interface KanaResult {
 const VOWELS = new Set(['a', 'i', 'u', 'e', 'o']);
 const HIRAGANA_FIRST = 0x3041;
 const HIRAGANA_LAST = 0x3096;
+const KATAKANA_FIRST = 0x30a1;
+const KATAKANA_LAST = 0x30f6;
 const KATAKANA_OFFSET = 0x60;
 
 export function toKatakana(kana: string): string {
@@ -20,6 +22,18 @@ export function toKatakana(kana: string): string {
         : char;
   }
   return katakana;
+}
+
+export function toHiragana(kana: string): string {
+  let hiragana = '';
+  for (const char of kana) {
+    const code = char.codePointAt(0) ?? 0;
+    hiragana +=
+      code >= KATAKANA_FIRST && code <= KATAKANA_LAST
+        ? String.fromCodePoint(code - KATAKANA_OFFSET)
+        : char;
+  }
+  return hiragana;
 }
 
 export function toKana(input: string): KanaResult {
