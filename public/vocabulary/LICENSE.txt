@@ -1,4 +1,4 @@
-jmdict-common-nouns.json is derived from JMdict.
+jmdict-nouns.json is derived from JMdict.
 
 JMdict is the property of the Electronic Dictionary Research and Development Group (EDRDG) and is
 used in conformance with the Group's licence. It is distributed under the Creative Commons
@@ -13,5 +13,5 @@ The JSON conversion used as input is jmdict-simplified:
   https://github.com/scriptin/jmdict-simplified
 
 This derived file is likewise available under CC BY-SA 4.0. It was produced by
-scripts/build-vocabulary.mjs, which filters JMdict down to common standalone nouns and keeps one
-short English gloss plus the sense tags for each of them.
+scripts/build-vocabulary.mjs, which filters JMdict down to standalone nouns and keeps one short
+English gloss plus the sense tags for each of them.

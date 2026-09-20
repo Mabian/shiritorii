@@ -4,8 +4,10 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { vi } from 'vitest';
 
 import { routes } from './app.routes';
+import { Game } from './game/game';
+import { Home } from './home/home';
 
-const VOCABULARY = { tagDescriptions: {}, words: {} };
+const VOCABULARY = { words: {} };
 
 describe('routes', () => {
   beforeEach(() => {
@@ -22,30 +24,25 @@ describe('routes', () => {
   });
 
   it('starts on the mode selection', async () => {
-    const harness = await RouterTestingHarness.create('/');
-    expect(harness.routeNativeElement?.querySelector('.home-mode')).not.toBeNull();
+    const harness = await RouterTestingHarness.create();
+    expect(await harness.navigateByUrl('/')).toBeInstanceOf(Home);
   });
 
-  it('opens the game in the mode from the url', async () => {
+  it('opens the game from the url', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/play/challenge');
+    const game = await harness.navigateByUrl('/play/challenge', Game);
 
-    expect(harness.routeNativeElement?.querySelector('.game-mode-badge')?.textContent?.trim()).toBe(
-      'Challenge',
-    );
+    expect(game).toBeInstanceOf(Game);
+    expect(game.mode()).toBe('challenge');
   });
 
   it('sends an unknown mode back to the mode selection', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/play/banana');
-
-    expect(harness.routeNativeElement?.querySelector('.home-mode')).not.toBeNull();
+    expect(await harness.navigateByUrl('/play/banana')).toBeInstanceOf(Home);
   });
 
   it('sends an unknown url back to the mode selection', async () => {
     const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/nowhere');
-
-    expect(harness.routeNativeElement?.querySelector('.home-mode')).not.toBeNull();
+    expect(await harness.navigateByUrl('/nowhere')).toBeInstanceOf(Home);
   });
 });

@@ -1,53 +1,88 @@
-<p class="game-mode-badge">{{ info().name }}</p>
-
-<form class="game-form" (submit)="onSubmit($event)">
-  <app-romaji-input [(value)]="word" />
-</form>
-
-@if (vocabulary.isLoading()) {
-  <p class="game-status">Loading the dictionary&hellip;</p>
-}
 @if (vocabulary.hasFailed()) {
   <p class="game-status game-status-error">The dictionary could not be loaded.</p>
-}
-
-@let result = check();
-
-@if (result !== undefined && result.status !== 'empty') {
-  <div class="game-result" role="status">
-    @switch (result.status) {
-      @case ('ok') {
-        <p class="game-result-verdict game-result-verdict-ok">
-          <span lang="ja">{{ result.reading }}</span> is a word
-        </p>
-        <ul class="game-result-meanings">
-          @for (entry of result.entries; track $index) {
-            <li class="game-result-meaning">
-              @if (entry.kanji ?? entry.kana; as spelling) {
-                <span class="game-result-spelling" lang="ja">{{ spelling }}</span>
-              }
-              <span class="game-result-gloss">{{ entry.meaning }}</span>
-              @for (tag of entry.tags; track tag) {
-                <span class="game-result-tag" [title]="vocabulary.describeTag(tag)">{{ tag }}</span>
-              }
-            </li>
-          }
-        </ul>
-      }
-      @case ('ends-with-n') {
-        <p class="game-result-verdict">
-          <span lang="ja">{{ result.reading }}</span> ends in <span lang="ja">ん</span> &mdash; that
-          loses the game
-        </p>
-      }
-      @case ('unknown') {
-        <p class="game-result-verdict">
-          <span lang="ja">{{ result.reading }}</span> is not in the dictionary
-        </p>
-      }
-      @case ('incomplete') {
-        <p class="game-result-verdict">That still has unfinished romaji in it</p>
+} @else if (!vocabulary.isReady()) {
+  <p class="game-status">Loading the dictionary&hellip;</p>
+} @else {
+  @switch (session.phase()) {
+    @case ('countdown') {
+      <!-- Re-keyed on every step so the element is rebuilt and replays its animation -->
+      @for (step of [session.countdownText]; track step) {
+        <p class="game-countdown" lang="ja">{{ step }}</p>
       }
     }
-  </div>
+
+    @case ('over') {
+      <div class="game-over">
+        <p class="game-over-reason">{{ endingText() }}</p>
+
+        @if (session.scored()) {
+          <p class="game-over-score">{{ session.score() }}</p>
+          <p class="game-over-score-label">points</p>
+        }
+
+        <dl class="game-over-stats">
+          <div class="game-over-stat">
+            <dt>Words</dt>
+            <dd>{{ session.wordsPlayed() }}</dd>
+          </div>
+          <div class="game-over-stat">
+            <dt>Longest streak</dt>
+            <dd>{{ session.longestStreak() }}</dd>
+          </div>
+        </dl>
+
+        @if (session.missedWord(); as missed) {
+          <p class="game-over-missed">
+            You could have played
+            <span class="game-over-missed-word" lang="ja">{{ missed.reading }}</span>
+            @if (missed.meaning) {
+              <span class="game-over-missed-meaning">({{ missed.meaning }})</span>
+            }
+          </p>
+        }
+
+        <div class="game-over-actions">
+          <button class="game-button game-button-primary" type="button" (click)="playAgain()">
+            Play again
+          </button>
+          <a class="game-button" routerLink="/">Back to the modes</a>
+        </div>
+      </div>
+    }
+
+    @default {
+      <app-game-chat [messages]="session.messages()" [thinking]="session.phase() === 'opponent'" />
+
+      <div class="game-controls">
+        @if (session.scored()) {
+          <div class="game-clock">
+            <div class="game-clock-bar" [style.width.%]="clockPercent()"></div>
+            <span class="game-clock-value">{{ clockText() }}s</span>
+          </div>
+        }
+
+        <form class="game-form" (submit)="onSubmit($event)">
+          <app-romaji-input [(value)]="word" />
+        </form>
+
+        <div class="game-actions">
+          @if (session.scored()) {
+            <button
+              class="game-button game-skip"
+              type="button"
+              [disabled]="!session.canSkip()"
+              [title]="skipTitle()"
+              (click)="session.skip()"
+            >
+              Skip (-{{ skipCost }}s)
+            </button>
+          }
+
+          <button class="game-button game-give-up" type="button" (click)="session.giveUp()">
+            Give up
+          </button>
+        </div>
+      </div>
+    }
+  }
 }

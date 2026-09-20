@@ -3,6 +3,49 @@
   width: min(100%, 34rem);
 }
 
+.home-header {
+  margin-block-end: 2.5rem;
+  text-align: center;
+}
+
+.home-title {
+  margin: 0;
+
+  .home-title-kana {
+    display: block;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+  }
+
+  .home-title-latin {
+    display: block;
+    margin-block-start: 0.4rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+  }
+
+  // The torii stands in for the double i, so it sits on the same baseline as the letters. Its own
+  // font stack keeps the text font from serving a monochrome fallback.
+  .home-title-torii {
+    font-family: var(--font-emoji);
+    font-size: 1.15em;
+    vertical-align: -0.1em;
+  }
+}
+
+.home-tagline {
+  margin: 1.25rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  text-align: center;
+  text-wrap: balance;
+}
+
 .home-heading {
   margin: 0 0 1.5rem;
   color: var(--color-text-muted);
@@ -15,7 +58,7 @@
 
 .home-modes {
   display: grid;
-  // Side by side as soon as there is room, stacked when there is not — no media query needed.
+  // Side by side as soon as there is room, stacked when there is not, with no media query needed.
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
   gap: 1rem;
   margin: 0;
@@ -72,5 +115,16 @@
     color: var(--color-text-muted);
     font-size: 0.9rem;
     line-height: 1.5;
+  }
+}
+
+.home-status {
+  margin: 1.5rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+
+  &.home-status-error {
+    color: var(--color-error);
   }
 }

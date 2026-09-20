@@ -1,71 +1,23 @@
 .app-shell {
   display: flex;
-  min-height: 100dvh;
+  height: 100dvh;
   flex-direction: column;
-}
-
-.app-header {
-  padding: 2.5rem 1.5rem 0;
-}
-
-.app-title {
-  margin: 0;
-  text-align: center;
-
-  .app-title-link {
-    color: inherit;
-    text-decoration: none;
-
-    &:focus-visible {
-      outline: 3px solid var(--color-focus);
-      outline-offset: 6px;
-      border-radius: 0.5rem;
-    }
-  }
-
-  .app-title-kana {
-    display: block;
-    font-size: clamp(2.5rem, 8vw, 4rem);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    line-height: 1.1;
-  }
-
-  .app-title-latin {
-    display: block;
-    margin-block-start: 0.4rem;
-    color: var(--color-text-muted);
-    font-size: 0.95rem;
-    font-weight: 500;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-  }
-
-  // The torii stands in for the double i, so it sits on the same baseline as the letters. Its own
-  // font stack keeps the text font from serving a monochrome fallback.
-  .app-title-torii {
-    font-family: var(--font-emoji);
-    font-size: 1.15em;
-    vertical-align: -0.1em;
-  }
-}
-
-.app-tagline {
-  max-width: 34rem;
-  margin: 1.25rem auto 0;
-  color: var(--color-text-muted);
-  font-size: 0.95rem;
-  text-align: center;
-  text-wrap: balance;
 }
 
 .app-stage {
   display: flex;
   flex: 1;
+  min-height: 0;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 2rem 1.5rem;
+  // Safe centring: it behaves as centre while there is room and falls back to the start when there
+  // is not, so a short window can never put the top of the page out of reach.
+  justify-content: safe center;
+  // The game shrinks its own chat and never needs this, but the start page and the end screen are
+  // plain content that has to stay reachable.
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.5rem;
 }
 
 .app-footer {

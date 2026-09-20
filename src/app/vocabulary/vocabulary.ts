@@ -1,20 +1,20 @@
 import { Injectable, computed, resource } from '@angular/core';
 
+import { startingKana } from '../kana/linking-kana';
 import { VocabularyEntry } from './vocabulary-entry';
 
-const VOCABULARY_URL = 'vocabulary/jmdict-common-nouns.json';
+const VOCABULARY_URL = 'vocabulary/jmdict-nouns.json';
 
 /** The shape written by scripts/build-vocabulary.mjs. */
 interface VocabularyFile {
-  /** Every JMdict tag code mapped to its English description. */
-  readonly tagDescriptions: Readonly<Record<string, string>>;
   /** Entries keyed by their hiragana reading. */
   readonly words: Readonly<Record<string, readonly VocabularyEntry[]>>;
 }
 
 interface Indexed {
   readonly words: ReadonlyMap<string, readonly VocabularyEntry[]>;
-  readonly tagDescriptions: ReadonlyMap<string, string>;
+  /** Common playable readings bucketed by their starting kana; the opponent draws from these. */
+  readonly byStartingKana: ReadonlyMap<string, readonly string[]>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -37,16 +37,31 @@ export class Vocabulary {
     return this.data.value()?.words.get(reading);
   }
 
-  /** The human-readable text behind a tag code, falling back to the code itself. */
-  describeTag(tag: string): string {
-    return this.data.value()?.tagDescriptions.get(tag) ?? tag;
+  /** Common readings starting with this kana that do not end in ん, so they can be answered. */
+  wordsStartingWith(kana: string): readonly string[] {
+    return this.data.value()?.byStartingKana.get(kana) ?? [];
   }
 }
 
 /** Maps beat plain objects here, because `noPropertyAccessFromIndexSignature` is on. */
 function index(file: VocabularyFile): Indexed {
-  return {
-    words: new Map(Object.entries(file.words)),
-    tagDescriptions: new Map(Object.entries(file.tagDescriptions)),
-  };
+  const words = new Map(Object.entries(file.words));
+  const byStartingKana = new Map<string, string[]>();
+
+  for (const [reading, entries] of words) {
+    // A word ending in ん loses the game, so the opponent must never be able to draw one. Obscure
+    // words are fair game for the player but would make a baffling opponent, so they stay out too
+    if (reading.endsWith('ん') || !entries.some((entry) => entry.common === true)) {
+      continue;
+    }
+    const start = startingKana(reading);
+    const bucket = byStartingKana.get(start);
+    if (bucket === undefined) {
+      byStartingKana.set(start, [reading]);
+    } else {
+      bucket.push(reading);
+    }
+  }
+
+  return { words, byStartingKana };
 }

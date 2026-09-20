@@ -11,7 +11,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const RELEASE_API = 'https://api.github.com/repos/scriptin/jmdict-simplified/releases/latest';
-const ASSET_PATTERN = /^jmdict-eng-common-.*\.json\.tgz$/;
+const ASSET_PATTERN = /^jmdict-eng-\d.*\.json\.tgz$/;
 const OUTPUT_DIR = new URL('../public/vocabulary/', import.meta.url);
 
 // Readings may only consist of hiragana, katakana and the prolonged sound mark.
@@ -21,8 +21,8 @@ const IGNORED_KANA_TAGS = ['sk', 'ok'];
 // Senses nobody should be expected to know.
 const IGNORED_SENSE_TAGS = ['arch', 'obs'];
 
-const MIN_READINGS = 10_000;
-const REQUIRED_READINGS = ['しんぶん', 'さくら', 'てれび'];
+const MIN_READINGS = 150_000;
+const REQUIRED_READINGS = ['しんぶん', 'さくら', 'てれび', 'しおり', 'かえり'];
 
 /** Katakana block shifted onto the hiragana block; everything else is left alone. */
 function toHiragana(kana) {
@@ -74,14 +74,11 @@ function buildWords(dictionary) {
     }
 
     const kanji = pickKanji(word);
-    const gloss = sense.gloss
-      .slice(0, 2)
-      .map((entry) => entry.text)
-      .join('; ');
+    const gloss = sense.gloss[0].text;
     const tags = [...sense.misc, ...sense.field];
 
     for (const kanaForm of word.kana) {
-      if (!kanaForm.common || kanaForm.tags.some((tag) => IGNORED_KANA_TAGS.includes(tag))) {
+      if (kanaForm.tags.some((tag) => IGNORED_KANA_TAGS.includes(tag))) {
         continue;
       }
       if (!KANA_ONLY.test(kanaForm.text)) {
@@ -94,7 +91,11 @@ function buildWords(dictionary) {
         // Katakana words would otherwise only ever be shown in their normalised hiragana form.
         ...(kanaForm.text === reading ? {} : { kana: kanaForm.text }),
         meaning: gloss,
-        tags,
+        // Most entries carry none, and an empty array 200 000 times is 2 MB of nothing.
+        ...(tags.length === 0 ? {} : { tags }),
+        // JMdict's priority marker. The player may use anything in here, but the opponent only
+        // draws from the common words, so it never answers with something obscure.
+        ...(kanaForm.common ? { common: true } : {}),
       };
 
       const existing = words.get(reading) ?? [];
@@ -130,6 +131,17 @@ if (words.size < MIN_READINGS) {
   throw new Error(`Sanity check failed: only ${words.size} readings, expected ${MIN_READINGS}+`);
 }
 
+// JMdict lists homophones in entry order, which is not usefulness order: みず would otherwise be
+// glossed as "Ms" rather than "water". Entries written with kanji are the native words, so they go
+// first and the app can simply take the first one.
+for (const entries of words.values()) {
+  entries.sort(
+    (a, b) =>
+      Number(b.common === true) - Number(a.common === true) ||
+      Number(b.kanji !== undefined) - Number(a.kanji !== undefined),
+  );
+}
+
 const output = {
   source: 'JMdict (EDRDG), CC BY-SA 4.0',
   version: dictionary.version,
@@ -139,8 +151,13 @@ const output = {
 };
 
 mkdirSync(OUTPUT_DIR, { recursive: true });
-const target = new URL('jmdict-common-nouns.json', OUTPUT_DIR);
+const target = new URL('jmdict-nouns.json', OUTPUT_DIR);
 writeFileSync(target, JSON.stringify(output));
 
+const commonReadings = [...words.values()].filter((entries) =>
+  entries.some((entry) => entry.common === true),
+).length;
 const sizeMb = (readFileSync(target).byteLength / 1024 / 1024).toFixed(2);
-console.log(`Wrote ${words.size} readings, ${entryCount} entries, ${sizeMb} MB`);
+console.log(
+  `Wrote ${words.size} readings (${commonReadings} common), ${entryCount} entries, ${sizeMb} MB`,
+);

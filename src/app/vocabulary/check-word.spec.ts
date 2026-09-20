@@ -1,7 +1,9 @@
-import { checkWord } from './check-word';
+import { Chain, checkWord } from './check-word';
 import { LookupReading, VocabularyEntry } from './vocabulary-entry';
 
 const FIXTURE: Readonly<Record<string, readonly VocabularyEntry[]>> = {
+  もり: [{ kanji: '森', meaning: 'forest', tags: [] }],
+  もち: [{ kanji: '餅', meaning: 'rice cake', tags: ['food'] }],
   さくら: [{ kanji: '桜', meaning: 'cherry tree; cherry blossom', tags: [] }],
   てれび: [{ kana: 'テレビ', meaning: 'television; TV', tags: ['abbr'] }],
   かみ: [
@@ -12,46 +14,77 @@ const FIXTURE: Readonly<Record<string, readonly VocabularyEntry[]>> = {
 
 const lookup: LookupReading = (reading) => FIXTURE[reading];
 
+/** Answers link to こども, so everything valid has to start with も. */
+const chain: Chain = { previous: 'こども', used: new Set() };
+
+function check(input: string, over: Partial<Chain> = {}) {
+  return checkWord(input, lookup, { ...chain, ...over });
+}
+
 describe('checkWord', () => {
-  it('accepts a word that is in the vocabulary', () => {
-    expect(checkWord('sakura', lookup)).toEqual({
+  it('accepts a word that continues the chain', () => {
+    expect(check('mori')).toEqual({
       status: 'ok',
-      reading: 'さくら',
-      entries: FIXTURE['さくら'],
+      reading: 'もり',
+      entries: FIXTURE['もり'],
     });
   });
 
   it('returns every homophone', () => {
-    const check = checkWord('kami', lookup);
+    const result = check('kami', { previous: 'たなか' });
 
-    expect(check.status).toBe('ok');
-    expect(check.status === 'ok' && check.entries).toHaveLength(2);
+    expect(result.status).toBe('ok');
+    expect(result.status === 'ok' && result.entries).toHaveLength(2);
   });
 
   it('finds katakana words through their hiragana reading', () => {
-    expect(checkWord('terebi', lookup).status).toBe('ok');
-    expect(checkWord('TEREBI', lookup).status).toBe('ok');
+    expect(check('terebi', { previous: 'はて' }).status).toBe('ok');
+    expect(check('TEREBI', { previous: 'はて' }).status).toBe('ok');
   });
 
   it('rejects a word ending in ん', () => {
-    expect(checkWord('ringonn', lookup)).toEqual({ status: 'ends-with-n', reading: 'りんごん' });
+    expect(check('ringonn')).toEqual({ status: 'ends-with-n', reading: 'りんごん' });
   });
 
   it('finishes a trailing n so the ん is caught rather than read as unfinished romaji', () => {
-    expect(checkWord('shinbun', lookup)).toEqual({ status: 'ends-with-n', reading: 'しんぶん' });
+    expect(check('shinbun')).toEqual({ status: 'ends-with-n', reading: 'しんぶん' });
   });
 
   it('reports a word that is not in the vocabulary', () => {
-    expect(checkWord('yamayama', lookup)).toEqual({ status: 'unknown', reading: 'やまやま' });
+    expect(check('yamayama')).toEqual({ status: 'unknown', reading: 'やまやま' });
+  });
+
+  it('reports a word that does not continue the chain', () => {
+    expect(check('sakura')).toEqual({
+      status: 'wrong-start',
+      reading: 'さくら',
+      expected: 'も',
+    });
+  });
+
+  it('blames the dictionary before the chain', () => {
+    expect(check('yamayama').status).toBe('unknown');
+  });
+
+  it('links on the normalised kana of the word before it', () => {
+    expect(check('chi', { previous: 'こーひー' }).status).not.toBe('ok');
+    expect(check('mochi', { previous: 'きんぎも' }).status).toBe('ok');
+  });
+
+  it('rejects a word that was already played', () => {
+    expect(check('mori', { used: new Set(['もり']) })).toEqual({
+      status: 'already-used',
+      reading: 'もり',
+    });
   });
 
   it('reports input that still holds romaji', () => {
-    expect(checkWord('ky', lookup)).toEqual({ status: 'incomplete' });
-    expect(checkWord('kyz', lookup)).toEqual({ status: 'incomplete' });
+    expect(check('ky')).toEqual({ status: 'incomplete' });
+    expect(check('kyz')).toEqual({ status: 'incomplete' });
   });
 
   it('reports empty input', () => {
-    expect(checkWord('', lookup)).toEqual({ status: 'empty' });
-    expect(checkWord('   ', lookup)).toEqual({ status: 'empty' });
+    expect(check('')).toEqual({ status: 'empty' });
+    expect(check('   ')).toEqual({ status: 'empty' });
   });
 });

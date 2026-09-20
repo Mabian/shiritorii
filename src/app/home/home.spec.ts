@@ -38,6 +38,18 @@ describe('Home', () => {
     }
   });
 
+  it('carries the wordmark', async () => {
+    const fixture = TestBed.createComponent(Home);
+    await fixture.whenStable();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('.home-title-kana')?.textContent).toBe('しりとり');
+    expect(compiled.querySelector('.home-title-latin')?.textContent?.replace('⛩️', '')).toBe(
+      'Shiritorii',
+    );
+    expect(compiled.querySelector('.home-tagline')?.textContent).toContain('two i');
+  });
+
   it('does not hold a word input', async () => {
     const fixture = TestBed.createComponent(Home);
     await fixture.whenStable();

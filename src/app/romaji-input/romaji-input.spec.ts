@@ -85,6 +85,10 @@ describe('RomajiInput', () => {
     expect(input.selectionStart).toBe(2);
   });
 
+  it('states the rules the player has to type by', () => {
+    expect(element.querySelector('.romaji-input-hint')?.textContent).toContain('Nouns only');
+  });
+
   it('wraps the field in its label and links the hint', () => {
     const label = element.querySelector('label');
     const hint = element.querySelector('.romaji-input-hint');

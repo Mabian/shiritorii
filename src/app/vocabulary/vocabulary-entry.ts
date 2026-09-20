@@ -6,8 +6,10 @@ export interface VocabularyEntry {
   readonly kana?: string;
   /** Short English gloss */
   readonly meaning: string;
-  /** JMdict sense tags such as `on-mim` or `food` */
-  readonly tags: readonly string[];
+  /** JMdict sense tags such as `on-mim` or `food`; absent when the entry carries none */
+  readonly tags?: readonly string[];
+  /** JMdict marks this as a common word. The opponent only ever plays these. */
+  readonly common?: boolean;
 }
 
 export type LookupReading = (reading: string) => readonly VocabularyEntry[] | undefined;

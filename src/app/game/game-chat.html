@@ -1,0 +1,34 @@
+<ol class="game-chat-list">
+  @for (message of messages(); track message.id) {
+    <li class="game-chat-item" [class]="'game-chat-item-' + message.side">
+      @if (message.side === 'system') {
+        <p class="game-chat-note">{{ message.text }}</p>
+      } @else {
+        <div class="game-chat-bubble" [class.game-chat-bubble-invalid]="message.invalid">
+          <span class="game-chat-word" lang="ja">{{ message.text }}</span>
+          @if (message.meaning) {
+            <span class="game-chat-meaning">{{ message.meaning }}</span>
+          }
+        </div>
+        @if (message.points !== undefined) {
+          <span class="game-chat-award" [class.game-chat-award-loss]="message.points < 0">
+            {{ message.points > 0 ? '+' : '' }}{{ message.points }}
+            @if (message.multiplier && message.multiplier > 1) {
+              <span class="game-chat-combo">×{{ message.multiplier }}</span>
+            }
+          </span>
+        }
+      }
+    </li>
+  }
+
+  @if (thinking()) {
+    <li class="game-chat-item game-chat-item-opponent">
+      <div class="game-chat-bubble game-chat-typing" aria-label="The opponent is thinking">
+        <span class="game-chat-dot"></span>
+        <span class="game-chat-dot"></span>
+        <span class="game-chat-dot"></span>
+      </div>
+    </li>
+  }
+</ol>

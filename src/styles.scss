@@ -1,4 +1,6 @@
 :root {
+  color-scheme: dark;
+
   --color-backdrop: #15131f;
   --color-surface: #211e31;
   --color-surface-raised: #2b2740;
@@ -27,14 +29,18 @@ body {
 
 body {
   margin: 0;
-  background: radial-gradient(circle at 50% 0%, #241f3a 0%, var(--color-backdrop) 60%);
+  background-color: var(--color-backdrop);
+  background-image: radial-gradient(circle at 50% 0%, #241f3a 0%, var(--color-backdrop) 60%);
+  // Locked to the viewport and never tiled, so a page taller than one screen shows no seam.
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--color-text);
   font-family: var(--font-japanese);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/** Screen readers only — removed visually, still present in the accessibility tree. */
+/** Screen readers only: removed visually, still present in the accessibility tree. */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -65,5 +71,31 @@ body {
     opacity: 1;
     transform: translateY(0) scale(1);
     filter: blur(0);
+  }
+}
+
+@keyframes chat-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes chat-typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(-0.2rem);
   }
 }

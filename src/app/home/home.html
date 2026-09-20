@@ -1,3 +1,15 @@
+<header class="home-header">
+  <h1 class="home-title">
+    <span class="home-title-kana" lang="ja">しりとり</span>
+    <span class="home-title-latin"
+      >Shiritor<span class="home-title-torii" aria-hidden="true">⛩️</span
+      ><span class="sr-only">ii</span></span
+    >
+  </h1>
+
+  <p class="home-tagline">Yes, that gate is the two i&rsquo;s.</p>
+</header>
+
 <h2 class="home-heading">Choose your mode</h2>
 
 <ul class="home-modes">
@@ -14,3 +26,10 @@
     </li>
   }
 </ul>
+
+@if (vocabulary.isLoading()) {
+  <p class="home-status">Loading the dictionary&hellip;</p>
+}
+@if (vocabulary.hasFailed()) {
+  <p class="home-status home-status-error">The dictionary could not be loaded.</p>
+}
