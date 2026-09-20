@@ -1,0 +1,79 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.game-mode-badge {
+  margin: 0;
+  padding: 0.25rem 0.9rem;
+  border: 1px solid var(--color-surface-raised);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.game-form {
+  display: flex;
+  width: min(100%, 34rem);
+  justify-content: center;
+}
+
+.game-status {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+
+  &.game-status-error {
+    color: var(--color-error);
+  }
+}
+
+.game-result {
+  width: min(100%, 34rem);
+  min-height: 4rem;
+
+  .game-result-verdict {
+    margin: 0;
+    font-size: 1.05rem;
+
+    &.game-result-verdict-ok {
+      color: var(--color-success);
+    }
+  }
+
+  .game-result-meanings {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .game-result-meaning {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-block: 0.2rem;
+  }
+
+  .game-result-spelling {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .game-result-gloss {
+    color: var(--color-text-muted);
+  }
+
+  .game-result-tag {
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background: var(--color-surface-raised);
+    color: var(--color-pending);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+}

@@ -1,0 +1,53 @@
+<p class="game-mode-badge">{{ info().name }}</p>
+
+<form class="game-form" (submit)="onSubmit($event)">
+  <app-romaji-input [(value)]="word" />
+</form>
+
+@if (vocabulary.isLoading()) {
+  <p class="game-status">Loading the dictionary&hellip;</p>
+}
+@if (vocabulary.hasFailed()) {
+  <p class="game-status game-status-error">The dictionary could not be loaded.</p>
+}
+
+@let result = check();
+
+@if (result !== undefined && result.status !== 'empty') {
+  <div class="game-result" role="status">
+    @switch (result.status) {
+      @case ('ok') {
+        <p class="game-result-verdict game-result-verdict-ok">
+          <span lang="ja">{{ result.reading }}</span> is a word
+        </p>
+        <ul class="game-result-meanings">
+          @for (entry of result.entries; track $index) {
+            <li class="game-result-meaning">
+              @if (entry.kanji ?? entry.kana; as spelling) {
+                <span class="game-result-spelling" lang="ja">{{ spelling }}</span>
+              }
+              <span class="game-result-gloss">{{ entry.meaning }}</span>
+              @for (tag of entry.tags; track tag) {
+                <span class="game-result-tag" [title]="vocabulary.describeTag(tag)">{{ tag }}</span>
+              }
+            </li>
+          }
+        </ul>
+      }
+      @case ('ends-with-n') {
+        <p class="game-result-verdict">
+          <span lang="ja">{{ result.reading }}</span> ends in <span lang="ja">ん</span> &mdash; that
+          loses the game
+        </p>
+      }
+      @case ('unknown') {
+        <p class="game-result-verdict">
+          <span lang="ja">{{ result.reading }}</span> is not in the dictionary
+        </p>
+      }
+      @case ('incomplete') {
+        <p class="game-result-verdict">That still has unfinished romaji in it</p>
+      }
+    }
+  </div>
+}

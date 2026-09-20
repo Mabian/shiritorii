@@ -1,68 +1,20 @@
 <div class="app-shell">
-  <main class="app-stage">
+  <header class="app-header">
     <h1 class="app-title">
-      <span class="app-title-kana" lang="ja">しりとり</span>
-      <span class="app-title-latin"
-        >Shiritor<span class="app-title-torii" aria-hidden="true">⛩️</span
-        ><span class="sr-only">ii</span></span
-      >
+      <a class="app-title-link" routerLink="/">
+        <span class="app-title-kana" lang="ja">しりとり</span>
+        <span class="app-title-latin"
+          >Shiritor<span class="app-title-torii" aria-hidden="true">⛩️</span
+          ><span class="sr-only">ii</span></span
+        >
+      </a>
     </h1>
 
     <p class="app-tagline">Yes, that gate is the two i&rsquo;s.</p>
+  </header>
 
-    <form class="app-form" (submit)="onSubmit($event)">
-      <app-romaji-input [(value)]="word" />
-    </form>
-
-    @if (vocabulary.isLoading()) {
-      <p class="app-status">Loading the dictionary&hellip;</p>
-    }
-    @if (vocabulary.hasFailed()) {
-      <p class="app-status app-status-error">The dictionary could not be loaded.</p>
-    }
-
-    @let result = check();
-
-    @if (result !== undefined && result.status !== 'empty') {
-      <div class="app-result" role="status">
-        @switch (result.status) {
-          @case ('ok') {
-            <p class="app-result-verdict app-result-verdict-ok">
-              <span lang="ja">{{ result.reading }}</span> is a word
-            </p>
-            <ul class="app-result-meanings">
-              @for (entry of result.entries; track $index) {
-                <li class="app-result-meaning">
-                  @if (entry.kanji ?? entry.kana; as spelling) {
-                    <span class="app-result-spelling" lang="ja">{{ spelling }}</span>
-                  }
-                  <span class="app-result-gloss">{{ entry.meaning }}</span>
-                  @for (tag of entry.tags; track tag) {
-                    <span class="app-result-tag" [title]="vocabulary.describeTag(tag)">{{
-                      tag
-                    }}</span>
-                  }
-                </li>
-              }
-            </ul>
-          }
-          @case ('ends-with-n') {
-            <p class="app-result-verdict">
-              <span lang="ja">{{ result.reading }}</span> ends in <span lang="ja">ん</span> &mdash;
-              that loses the game
-            </p>
-          }
-          @case ('unknown') {
-            <p class="app-result-verdict">
-              <span lang="ja">{{ result.reading }}</span> is not in the dictionary
-            </p>
-          }
-          @case ('incomplete') {
-            <p class="app-result-verdict">That still has unfinished romaji in it</p>
-          }
-        }
-      </div>
-    }
+  <main class="app-stage">
+    <router-outlet />
   </main>
 
   <footer class="app-footer">
@@ -79,5 +31,3 @@
     >.
   </footer>
 </div>
-
-<router-outlet />

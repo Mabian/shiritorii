@@ -4,19 +4,24 @@
   flex-direction: column;
 }
 
-.app-stage {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.25rem;
-  padding: 1.5rem;
+.app-header {
+  padding: 2.5rem 1.5rem 0;
 }
 
 .app-title {
   margin: 0;
   text-align: center;
+
+  .app-title-link {
+    color: inherit;
+    text-decoration: none;
+
+    &:focus-visible {
+      outline: 3px solid var(--color-focus);
+      outline-offset: 6px;
+      border-radius: 0.5rem;
+    }
+  }
 
   .app-title-kana {
     display: block;
@@ -47,73 +52,20 @@
 
 .app-tagline {
   max-width: 34rem;
-  margin: 0 0 1.25rem;
+  margin: 1.25rem auto 0;
   color: var(--color-text-muted);
   font-size: 0.95rem;
   text-align: center;
   text-wrap: balance;
 }
 
-.app-form {
+.app-stage {
   display: flex;
-  width: min(100%, 34rem);
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-}
-
-.app-status {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-
-  &.app-status-error {
-    color: var(--color-error);
-  }
-}
-
-.app-result {
-  width: min(100%, 34rem);
-  min-height: 4rem;
-
-  .app-result-verdict {
-    margin: 0;
-    font-size: 1.05rem;
-
-    &.app-result-verdict-ok {
-      color: var(--color-success);
-    }
-  }
-
-  .app-result-meanings {
-    margin: 0.5rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .app-result-meaning {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding-block: 0.2rem;
-  }
-
-  .app-result-spelling {
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-
-  .app-result-gloss {
-    color: var(--color-text-muted);
-  }
-
-  .app-result-tag {
-    padding: 0.1rem 0.45rem;
-    border-radius: 999px;
-    background: var(--color-surface-raised);
-    color: var(--color-pending);
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
-  }
+  padding: 2rem 1.5rem;
 }
 
 .app-footer {

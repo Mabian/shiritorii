@@ -1,0 +1,16 @@
+<h2 class="home-heading">Choose your mode</h2>
+
+<ul class="home-modes">
+  @for (mode of modes; track mode.id) {
+    <li class="home-modes-item">
+      <a
+        class="home-mode"
+        [class.home-mode-featured]="mode.id === 'challenge'"
+        [routerLink]="['/play', mode.id]"
+      >
+        <span class="home-mode-name">{{ mode.name }}</span>
+        <span class="home-mode-summary">{{ mode.summary }}</span>
+      </a>
+    </li>
+  }
+</ul>
