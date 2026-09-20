@@ -1,0 +1,111 @@
+/**
+ * The mirror and the field must share the exact same text metrics, otherwise the caret drifts away
+ * from the visible text
+ */
+@mixin romaji-input-text-metrics {
+  box-sizing: border-box;
+  padding: var(--romaji-input-padding-block) var(--romaji-input-padding-inline);
+  border: var(--romaji-input-border-width) solid transparent;
+  font-family: inherit;
+  font-size: var(--romaji-input-font-size);
+  font-weight: 700;
+  line-height: var(--romaji-input-line-height);
+  letter-spacing: var(--romaji-input-letter-spacing);
+  font-kerning: none;
+  font-variant-ligatures: none;
+  white-space: pre;
+  text-align: start;
+}
+
+:host {
+  --romaji-input-font-size: 2.25rem;
+  --romaji-input-padding-block: 0.6rem;
+  --romaji-input-padding-inline: 1rem;
+  --romaji-input-border-width: 2px;
+  --romaji-input-line-height: 1.5;
+  --romaji-input-letter-spacing: 0.02em;
+
+  display: block;
+  width: min(100%, 34rem);
+}
+
+// Wrapping the field keeps label and input linked without ids
+.romaji-input-label {
+  display: block;
+
+  .romaji-input-label-text {
+    display: block;
+    margin-block-end: 0.5rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+}
+
+.romaji-input-box {
+  position: relative;
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow: inset 0 0 0 var(--romaji-input-border-width) var(--color-surface-raised);
+
+  &:focus-within {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .romaji-input-mirror {
+    @include romaji-input-text-metrics;
+
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: var(--color-text);
+    pointer-events: none;
+
+    .romaji-input-char {
+      display: inline-block;
+      animation: kana-pop 180ms cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+
+      // Pending romaji is rebuilt on every keystroke and must not jitter
+      &.romaji-input-char-pending {
+        color: var(--color-pending);
+        text-decoration: underline dotted currentcolor 2px;
+        text-underline-offset: 0.2em;
+        animation: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        animation: none;
+      }
+    }
+  }
+
+  .romaji-input-field {
+    @include romaji-input-text-metrics;
+
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--color-accent);
+
+    &:focus {
+      outline: none;
+    }
+
+    &::selection {
+      background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+      color: transparent;
+    }
+  }
+}
+
+.romaji-input-hint {
+  margin-block: 0.75rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}

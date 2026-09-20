@@ -1,0 +1,47 @@
+.app-stage {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+
+.app-title {
+  margin: 0;
+  text-align: center;
+
+  .app-title-kana {
+    display: block;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+  }
+
+  .app-title-latin {
+    display: block;
+    margin-block-start: 0.4rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+  }
+
+  .app-title-torii {
+    font-family: var(--font-emoji);
+    font-size: 1.15em;
+    vertical-align: -0.1em;
+  }
+}
+
+.app-tagline {
+  max-width: 34rem;
+  margin: 0 0 1.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  text-align: center;
+  text-wrap: balance;
+}

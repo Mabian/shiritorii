@@ -1,1 +1,67 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-backdrop: #15131f;
+  --color-surface: #211e31;
+  --color-surface-raised: #2b2740;
+  --color-text: #f4f1ff;
+  --color-text-muted: #b9b2d6;
+  --color-accent: #ffb454;
+  --color-pending: #8fd6ff;
+  --color-focus: #ffb454;
+
+  --font-japanese: 'M PLUS Rounded 1c', system-ui, sans-serif;
+  --font-emoji: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 50% 0%, #241f3a 0%, var(--color-backdrop) 60%);
+  color: var(--color-text);
+  font-family: var(--font-japanese);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/** Screen readers only — removed visually, still present in the accessibility tree. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/** A freshly converted kana pops into view. Global, because it is reusable anywhere. */
+@keyframes kana-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(0.14em) scale(0.55);
+    filter: blur(3px);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translateY(0) scale(1.12);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}

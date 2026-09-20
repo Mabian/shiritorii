@@ -1,12 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+import { RomajiInput } from './romaji-input/romaji-input';
+
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RomajiInput],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
-  protected readonly title = signal('shiritori');
-}
+export class App {}

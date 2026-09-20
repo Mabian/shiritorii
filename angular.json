@@ -31,6 +31,10 @@
               }
             ],
             "styles": [
+              "@fontsource/m-plus-rounded-1c/latin-400.css",
+              "@fontsource/m-plus-rounded-1c/latin-700.css",
+              "@fontsource/m-plus-rounded-1c/japanese-400.css",
+              "@fontsource/m-plus-rounded-1c/japanese-700.css",
               "src/styles.scss"
             ]
           },

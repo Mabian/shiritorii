@@ -1,0 +1,28 @@
+<label class="romaji-input-label">
+  <span class="romaji-input-label-text">Enter a word</span>
+
+  <div class="romaji-input-box">
+    <div class="romaji-input-mirror" aria-hidden="true" lang="ja">
+      @for (mirrorChar of chars(); track mirrorChar.key) {
+        <span class="romaji-input-char" [class.romaji-input-char-pending]="mirrorChar.isPending">{{
+          mirrorChar.char
+        }}</span>
+      }
+    </div>
+
+    <input
+      #field
+      class="romaji-input-field"
+      type="text"
+      lang="ja"
+      inputmode="latin"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      aria-describedby="romaji-input-hint"
+      (input)="onInput($event)"
+    />
+  </div>
+</label>
+
+<p class="romaji-input-hint" id="romaji-input-hint">Type romaji; it turns into kana as you go.</p>
