@@ -1,6 +1,9 @@
-# Shiritori
+# Shiritorii
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
+A browser-only game of shiritori — Shiritori + ⛩️ torii, because the double i was
+already gate-shaped.
+
+Generated with [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
 
 ## Development server
 
