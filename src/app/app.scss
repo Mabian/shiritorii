@@ -1,6 +1,12 @@
-.app-stage {
+.app-shell {
   display: flex;
   min-height: 100dvh;
+  flex-direction: column;
+}
+
+.app-stage {
+  display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -30,6 +36,8 @@
     text-transform: uppercase;
   }
 
+  // The torii stands in for the double i, so it sits on the same baseline as the letters. Its own
+  // font stack keeps the text font from serving a monochrome fallback.
   .app-title-torii {
     font-family: var(--font-emoji);
     font-size: 1.15em;
@@ -44,4 +52,81 @@
   font-size: 0.95rem;
   text-align: center;
   text-wrap: balance;
+}
+
+.app-form {
+  display: flex;
+  width: min(100%, 34rem);
+  justify-content: center;
+}
+
+.app-status {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+
+  &.app-status-error {
+    color: var(--color-error);
+  }
+}
+
+.app-result {
+  width: min(100%, 34rem);
+  min-height: 4rem;
+
+  .app-result-verdict {
+    margin: 0;
+    font-size: 1.05rem;
+
+    &.app-result-verdict-ok {
+      color: var(--color-success);
+    }
+  }
+
+  .app-result-meanings {
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .app-result-meaning {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-block: 0.2rem;
+  }
+
+  .app-result-spelling {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .app-result-gloss {
+    color: var(--color-text-muted);
+  }
+
+  .app-result-tag {
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background: var(--color-surface-raised);
+    color: var(--color-pending);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+}
+
+.app-footer {
+  padding: 1rem 1.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  text-align: center;
+
+  a {
+    color: inherit;
+
+    &:hover {
+      color: var(--color-text);
+    }
+  }
 }
